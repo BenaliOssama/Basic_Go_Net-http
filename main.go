@@ -3,10 +3,13 @@ package main
 import "net/http"
 
 func main() {
-	// starting a web server
-	// if i leave the port as default
-	// then port 80 will be used
-	// in that case you need to run the 
-	// with sudo previlage
-	http.ListenAndServe("", nil)
+	// we creat an http server struct
+	server := http.Server{
+		// 127.0.0.1 = localhost
+		Addr: "127.0.0.1:8080",
+		Handler: nil,
+	}
+	// this code now will run and hundle any request 
+	// with 404 not found
+	server.ListenAndServe()
 }
