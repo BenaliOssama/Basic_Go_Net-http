@@ -5,9 +5,32 @@ import (
 	"net/http"
 )
 
-// the handler we used previously handles all request with the same response
-// if we want to handle diffrent request with different responses
-// we need to make more handlers
+// there is the case where we use http.HandleFunc()
+// it act like a wrapper
+// it takes the path and the function and use the handle funct
+// after adabting the function to the handler
+// ////////////////////////////////////////////////////////////////////////////
+type Wrapper struct {
+	F func(http.ResponseWriter, *http.Request)
+}
+
+func (W *Wrapper) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	W.F(w, r)
+}
+
+func WrapperFunc(path string, f func(http.ResponseWriter, *http.Request)) {
+	instance := Wrapper{}
+	instance.F = f
+	http.Handle(path, &instance)
+}
+
+// /////////////////////////////////////////////////////////////////////////////
+// this is the function that is going to be wrapped
+func Example(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "this is function got adapted to the handler and rejesterd to the default multiplerxer")
+}
+
+// /////////////////////////////////////////////////////////////////////////////
 type Hello struct{}
 
 func (E *Hello) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -35,6 +58,11 @@ func main() {
 	// with 404 not found
 	http.Handle("/hello", &hello)
 	http.Handle("/world", &world)
+	///////////////////////////////////
+	// this function acts like the http.HandleFunc
+	WrapperFunc("/path", Example)
+	/////////////////////////////////
 	server.ListenAndServe()
 }
-// now visit localhost:8080/hello or localhost:8080/world on your browser 
+// visit localt host /path and you can see the prompt
+// visit localhost:8080/hello or localhost:8080/world on your browser
