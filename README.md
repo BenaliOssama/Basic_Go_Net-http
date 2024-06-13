@@ -12,7 +12,7 @@ This project demonstrates how to create a simple web server in Go using the net/
         Open a web browser and navigate to:
             http://localhost:8080/hello
             http://localhost:8080/world
-            http://localhost:8080/example
+            http://localhost:8080/path
 
 ### Commit History and Learning Path
 
